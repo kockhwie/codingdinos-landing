@@ -20,9 +20,16 @@
     <link rel="icon" type="image/png" sizes="512x512" href="/images/android-chrome-512x512.png">-->
 
     <!-- Other device-specific icons as needed -->
-  
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <style>
+      .rotate-hover:hover {
+        transform: rotate(360deg);
+        transition: transform 0.6s ease-in-out;
+      }
+    </style>
+   
   </head>
   <body class="bg-gray-100 text-gray-800">
     <header class="bg-white shadow-sm sticky top-0 z-10">
@@ -36,13 +43,14 @@
       </div>
     </header>
 
- 
-            <!-- img src="https://assets.codingdinos.asia/img/logo.png" alt="Coding Dinos Logo" class="h-16 mx-auto mb-4" /-->
+     <!-- img src="https://assets.codingdinos.asia/img/logo.png" alt="Coding Dinos Logo" class="h-16 mx-auto mb-4" /-->
      <main class="max-w-screen-xl mx-auto px-4 py-8">
       <section class="bg-white p-6 rounded shadow">
         <div class="flex flex-col md:flex-row">
           <div class="w-full md:w-1/2 flex justify-center items-center">
-            <img src="https://assets.codingdinos.asia/img/coding-dinos-logo-large.png" alt="Coding Dinos Logo" class="w-3/4 md:w-1/2 h-auto">
+            <img src="https://assets.codingdinos.asia/img/coding-dinos-logo-large.png" alt="Coding Dinos Logo" class="w-3/4 md:w-1/2 h-auto  animate-pulse">
+            <br>
+             <img src="https://assets.codingdinos.asia/img/coding-dinos-logo-large.png" alt="Coding Dinos Logo" class="w-3/4 md:w-1/2 h-auto bounce-dino">
           </div>
           <div class="w-full md:w-1/2 text-center flex flex-col justify-center">
             <h1 class="text-4xl md:text-5xl font-semibold mb-4">Hello from Coding Dinos 🦕</h1>
@@ -51,9 +59,6 @@
         </div>
       </section>
     </main>
-
-
- 
 
     <!-- ========== FOOTER ========== -->
     <footer class="footer sm:footer-horizontal bg-neutral text-neutral-content p-10"> 

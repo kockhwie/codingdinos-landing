@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dino AI Academy</title>
+    <link rel="icon" type="image/x-icon" href="https://assets.codingdinos.asia/img/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://assets.codingdinos.asia/img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://assets.codingdinos.asia/img/favicon-16x16.png">
+    
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    
+    <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes flipCard {
+            0% { transform: rotateY(0deg); }
+            50% { transform: rotateY(90deg); }
+            100% { transform: rotateY(0deg); }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .animate-slide-in-right {
+            animation: slideInRight 0.4s ease-out;
+        }
+
+        .flip-card {
+            perspective: 1000px;
+            height: 300px;
+            cursor: pointer;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+            text-align: center;
+            border-radius: 0.5rem;
+        }
+
+        .flip-card-front {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(99, 102, 241, 0.1));
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .flip-card-back {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            transform: rotateY(180deg);
+        }
+
+        .glass-premium {
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(0, 191, 255, 0.08);
+        }
+
+        .glass-premium-dark {
+            background: rgba(2, 8, 23, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(0, 191, 255, 0.05);
+        }
+
+        .depth-1 {
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
+        }
+
+        .depth-2 {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, #ffffff 0%, #a0d8ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+            border: 1px solid rgba(59, 130, 246, 0.5);
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .transition-smooth {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .level-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .level-1 {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #86efac;
+        }
+
+        .level-2 {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #93c5fd;
+        }
+
+        .level-3 {
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            color: #d8b4fe;
+        }
+
+        input, textarea {
+            background: rgba(15, 23, 42, 0.4) !important;
+            border: 1px solid rgba(0, 191, 255, 0.1) !important;
+            color: #e2e8f0 !important;
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: #64748b !important;
+        }
+
+        input:focus, textarea:focus {
+            background: rgba(15, 23, 42, 0.6) !important;
+            border-color: rgba(0, 191, 255, 0.3) !important;
+            outline: none !important;
+            box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.1) !important;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.3);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 191, 255, 0.2);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 191, 255, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+    <!-- Navigation -->
+    <header class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="max-w-screen-xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <a href="index.html" class="text-xl font-bold hover:text-blue-600 transition-smooth">Coding Dinos</a>
+                <span class="text-sm text-gray-500">/ Academy</span>
+            </div>
+            <nav class="space-x-4">
+                <a href="index.html" class="text-sm text-gray-600 hover:text-blue-600">Home</a>
+                <a href="#" class="text-sm text-gray-600 hover:text-blue-600">About</a>
+                <a href="#" class="text-sm text-gray-600 hover:text-blue-600">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-screen-xl mx-auto px-4 py-8">
+        <!-- Hero Section -->
+        <section class="bg-white p-6 rounded shadow mb-8 animate-fade-in-up">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-5xl font-semibold mb-4">🦖 Dino AI Academy</h1>
+                <p class="text-xl text-gray-600 mb-4">Master AI from the ground up. Learn at your own pace, from Hatchling to T-Rex.</p>
+                <p class="text-gray-500">Understand the foundations. Apply the logic. Evolve with AI.</p>
+            </div>
+        </section>
+
+        <!-- Tab Navigation -->
+        <div class="flex flex-wrap gap-2 mb-8 justify-center">
+            <button onclick="switchTab('levels')" id="tab-levels" class="btn btn-primary">📚 Learning Levels</button>
+            <button onclick="switchTab('glossary')" id="tab-glossary" class="btn btn-outline">📖 Glossary</button>
+            <button onclick="switchTab('flashcards')" id="tab-flashcards" class="btn btn-outline">🎴 Flashcards</button>
+            <button onclick="switchTab('trending')" id="tab-trending" class="btn btn-outline">🔥 Trending Terms</button>
+        </div>
+
+        <!-- LEVELS TAB -->
+        <div id="levels-tab" class="space-y-8">
+            <!-- Level 1: The Hatchling -->
+            <div class="bg-white p-6 rounded shadow animate-fade-in-up">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-4xl">🥚</span>
+                    <div>
+                        <h2 class="text-2xl font-semibold">Level 1: The Hatchling</h2>
+                        <span class="level-badge level-1">Foundations</span>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-4">Perfect for absolute beginners. Master the essentials of AI and understand how it works at a high level.</p>
+                
+                <div class="space-y-4">
+                    <div class="bg-gray-50 p-4 rounded border-l-4 border-green-500">
+                        <h3 class="font-semibold text-lg mb-2">📌 What is AI?</h3>
+                        <p class="text-gray-700 mb-3">Artificial Intelligence is a broad field of computer science that enables machines to perform tasks that typically require human intelligence. These tasks include learning, problem-solving, decision-making, perception, and understanding language.</p>
+                        <p class="text-gray-600 text-sm"><strong>Key Takeaway:</strong> AI learns from data to make decisions, just like humans learn from experience.</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded border-l-4 border-green-500">
+                        <h3 class="font-semibold text-lg mb-2">🧠 How AI Works (Simply)</h3>
+                        <p class="text-gray-700 mb-3">AI systems work by processing vast amounts of data to identify patterns and make predictions. The process involves:</p>
+                        <ul class="list-disc list-inside text-gray-600 space-y-1 mb-3">
+                            <li><strong>Data Input:</strong> Feed the AI large datasets (images, text, numbers)</li>
+                            <li><strong>Pattern Recognition:</strong> The AI finds relationships and recurring patterns</li>
+                            <li><strong>Learning:</strong> The AI adjusts itself to improve performance</li>
+                            <li><strong>Prediction:</strong> The trained AI applies what it learned to new data</li>
+                        </ul>
+                        <p class="text-gray-600 text-sm"><strong>Example:</strong> An AI learns to recognize cats by analyzing thousands of cat images, then can identify cats in new photos it's never seen.</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded border-l-4 border-green-500">
+                        <h3 class="font-semibold text-lg mb-2">✨ The Magic of Prompts</h3>
+                        <p class="text-gray-700 mb-3">A <strong>prompt</strong> is an instruction or question you give to an AI to guide its output. The quality of your prompt directly affects the quality of the response.</p>
+                        <p class="text-gray-600 text-sm mb-2"><strong>Bad Prompt:</strong> "Write about dinosaurs."</p>
+                        <p class="text-gray-600 text-sm"><strong>Good Prompt:</strong> "Write a short, engaging story for children aged 5-7 about a friendly dinosaur who learns to share his toys. Focus on friendship and kindness. Approximately 200 words with dialogue."</p>
+                    </div>
+                </div>
+
+                <button onclick="toggleContent('level1-more')" class="btn btn-outline btn-sm mt-4">Learn More</button>
+                <div id="level1-more" class="hidden mt-4 p-4 bg-blue-50 rounded">
+                    <p class="text-gray-700">As a Hatchling, you're building your foundation. Understanding these basics will help you use AI tools more effectively and ask better questions. Remember: AI is a tool, and like any tool, it works best when you know how to use it properly.</p>
+                </div>
+            </div>
+
+            <!-- Level 2: The Raptor -->
+            <div class="bg-white p-6 rounded shadow animate-fade-in-up" style="animation-delay: 0.1s;">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-4xl">🦖</span>
+                    <div>
+                        <h2 class="text-2xl font-semibold">Level 2: The Raptor</h2>
+                        <span class="level-badge level-2">Intermediate</span>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-4">Ready to level up? Learn advanced prompt engineering techniques and understand AI's limitations.</p>
+                
+                <div class="space-y-4">
+                    <div class="bg-gray-50 p-4 rounded border-l-4 border-blue-500">
+                        <h3 class="font-semibold text-lg mb-2">🎯 Prompt Engineering Frameworks</h3>
+                        <p class="text-gray-700 mb-3">The CRISPE Framework helps you structure powerful prompts:</p>
+                        <ul class="list-disc list-inside text-gray-600 space-y-1">
+                            <li><strong>C</strong>apacity & Role: Define the AI's persona</li>
+                            <li><strong>R</strong>equest: State what you want</li>
+                            <li><strong>I</strong>nstruction: Provide specific guidelines</li>
+                            <li><strong>S</strong>timulus: Offer context and examples</li>
+                            <li><strong>P</strong>arameters: Specify format and style</li>
+                            <li><strong>E</strong>xamples: Show input/output pairs</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded border-l-4 border-blue-500">
+                        <h3 class="font-semibold text-lg mb-2">⛓️ Chain-of-Thought Prompting</h3>
+                        <p class="text-gray-700 mb-3">Encourage the AI to explain its reasoning step-by-step. This leads to more accurate results for complex problems.</p>
+                        <p class="text-gray-600 text-sm"><strong>Example:</strong> "Think step-by-step: If I have 10 apples and give away 3, then buy 5 more, how many do I have?"</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded border-l-4 border-blue-500">
+                        <h3 class="font-semibold text-lg mb-2">🤥 Understanding AI Hallucinations</h3>
+                        <p class="text-gray-700 mb-3">AI can generate confident-sounding but false information. Always verify critical facts from reliable sources.</p>
+                    </div>
+                </div>
+
+                <button onclick="toggleContent('level2-more')" class="btn btn-outline btn-sm mt-4">Learn More</button>
+                <div id="level2-more" class="hidden mt-4 p-4 bg-blue-50 rounded">
+                    <p class="text-gray-700">As a Raptor, you're becoming skilled at AI interaction. You understand that prompts are powerful tools, and small changes in wording can dramatically affect results. You're also aware of AI's limitations and know when to trust it and when to verify.</p>
+                </div>
+            </div>
+
+            <!-- Level 3: The T-Rex -->
+            <div class="bg-white p-6 rounded shadow animate-fade-in-up" style="animation-delay: 0.2s;">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-4xl">🦕</span>
+                    <div>
+                        <h2 class="text-2xl font-semibold">Level 3: The T-Rex</h2>
+                        <span class="level-badge level-3">Advanced</span>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-4">Master the cutting edge. Explore multi-agent systems, RAG, and the future of AI.</p>
+                
+                <div class="space-y-4">
+                    <div class="bg-gray-50 p-4 rounded border-l-4 border-purple-500">
+                        <h3 class="font-semibold text-lg mb-2">🤝 Multi-agent Systems</h3>
+                        <p class="text-gray-700 mb-3">Multiple AI agents working together to solve complex problems. Each agent specializes in different aspects, enabling distributed problem-solving, robustness, and scalability.</p>
+                        <p class="text-gray-600 text-sm"><strong>Applications:</strong> Robotics swarms, supply chain optimization, financial modeling, smart grids.</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded border-l-4 border-purple-500">
+                        <h3 class="font-semibold text-lg mb-2">🔍 Retrieval-Augmented Generation (RAG)</h3>
+                        <p class="text-gray-700 mb-3">Enhance AI by allowing it to search external knowledge bases before generating responses. This reduces hallucinations and improves accuracy.</p>
+                        <p class="text-gray-600 text-sm"><strong>Example:</strong> An AI answering questions by first searching your company's internal documents for relevant information.</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded border-l-4 border-purple-500">
+                        <h3 class="font-semibold text-lg mb-2">🎓 Agentic Workflows</h3>
+                        <p class="text-gray-700 mb-3">AI systems that break down complex tasks into sub-tasks, plan, execute, and self-correct. The future of AI-assisted work.</p>
+                    </div>
+                </div>
+
+                <button onclick="toggleContent('level3-more')" class="btn btn-outline btn-sm mt-4">Learn More</button>
+                <div id="level3-more" class="hidden mt-4 p-4 bg-blue-50 rounded">
+                    <p class="text-gray-700">As a T-Rex, you're at the frontier of AI knowledge. You understand not just how to use AI, but how to architect complex AI systems. You're thinking about the future and how AI will evolve. You're ready to build, innovate, and lead in the AI world.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- GLOSSARY TAB -->
+        <div id="glossary-tab" class="hidden">
+            <div class="bg-white p-6 rounded shadow">
+                <h2 class="text-2xl font-semibold mb-4">🔤 AI Glossary</h2>
+                <input type="text" id="glossary-search" placeholder="Search terms..." class="w-full p-3 border rounded mb-6" onkeyup="filterGlossary()">
+                
+                <div id="glossary-list" class="space-y-4">
+                    <!-- Glossary items will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- FLASHCARDS TAB -->
+        <div id="flashcards-tab" class="hidden">
+            <div>
+                <h2 class="text-2xl font-semibold mb-4">🎴 Shareable Flashcards</h2>
+                <p class="text-gray-600 mb-6">Click any card to flip it. Share these knowledge bites with your team!</p>
+                
+                <div id="flashcards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Flashcards will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- TRENDING TAB -->
+        <div id="trending-tab" class="hidden">
+            <div class="bg-white p-6 rounded shadow">
+                <h2 class="text-2xl font-semibold mb-4">🔥 Trending AI Terms (2026)</h2>
+                <p class="text-gray-600 mb-6">Stay updated with the latest AI terminology shaping the industry.</p>
+                
+                <div id="trending-list" class="space-y-4">
+                    <!-- Trending items will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="flex flex-col md:flex-row md:justify-between items-center bg-base-100 text-base-content border-t border-base-300 px-6 py-6 gap-y-4 text-center mt-12">
+        <aside>
+            <p class="text-sm md:text-base">
+                Copyright © 2026 Coding Dinos Asia. All rights reserved.
+            </p>
+        </aside>
+    </footer>
+
+    <script>
+        // Glossary Data
+        const glossaryData = [
+            { term: "Artificial Intelligence (AI)", definition: "A broad field of computer science focused on creating machines that can perform tasks requiring human intelligence.", category: "Foundational" },
+            { term: "Machine Learning (ML)", definition: "A subset of AI where systems learn from data to identify patterns and make decisions without explicit programming.", category: "Foundational" },
+            { term: "Deep Learning (DL)", definition: "A specialized ML technique using multi-layered neural networks to learn complex patterns from large datasets.", category: "Foundational" },
+            { term: "Neural Network", definition: "A computational model inspired by the human brain, consisting of interconnected nodes that process information.", category: "Foundational" },
+            { term: "Natural Language Processing (NLP)", definition: "A branch of AI that enables computers to understand, interpret, and generate human language.", category: "Foundational" },
+            { term: "Generative AI", definition: "AI models capable of generating new, original content such as text, images, audio, or code.", category: "Trending" },
+            { term: "Large Language Model (LLM)", definition: "A type of generative AI trained on vast amounts of text data, capable of understanding and generating human language.", category: "Trending" },
+            { term: "Multimodal AI", definition: "AI systems that can process and understand information from multiple types of data inputs simultaneously.", category: "Trending" },
+            { term: "Agentic Workflows", definition: "AI systems designed to perform complex tasks by breaking them down, planning, executing, and self-correcting.", category: "Trending" },
+            { term: "Small Language Models (SLMs)", definition: "Smaller, more efficient versions of LLMs designed for specific tasks or edge devices.", category: "Trending" },
+            { term: "Retrieval-Augmented Generation (RAG)", definition: "A technique that enhances AI by allowing it to retrieve information from external knowledge bases before generating responses.", category: "Trending" },
+            { term: "Prompt", definition: "An input, instruction, or question given to an AI model to guide its output.", category: "Practical" },
+            { term: "Prompt Engineering", definition: "The art and science of crafting effective prompts to elicit desired responses from AI models.", category: "Practical" },
+            { term: "Token", definition: "The basic unit of text that an AI model processes. Can be a word, part of a word, or a single character.", category: "Practical" },
+            { term: "Context Window", definition: "The maximum amount of text an AI model can consider at one time when generating a response.", category: "Practical" },
+            { term: "Temperature", definition: "A parameter controlling the randomness or creativity of AI output. Higher = more creative, Lower = more focused.", category: "Practical" },
+            { term: "System Prompt", definition: "A hidden initial instruction given to an AI to define its role, behavior, or constraints.", category: "Practical" },
+            { term: "Hallucination", definition: "When an AI generates information that is factually incorrect or nonsensical, presented as true.", category: "Practical" }
+        ];
+
+        // Flashcards Data
+        const flashcardsData = [
+            { front: "🧠 Artificial Intelligence", back: "The science of making machines perform tasks that typically require human intelligence.", proTip: "AI is the broad field; ML and DL are specific methods within AI." },
+            { front: "🤖 Machine Learning", back: "Systems learn from data to identify patterns and make decisions without explicit programming.", proTip: "Think of ML as teaching a computer by showing it many examples." },
+            { front: "💡 Deep Learning", back: "A specialized ML technique using multi-layered neural networks for complex pattern learning.", proTip: "Deep Learning is behind breakthroughs in image recognition and NLP." },
+            { front: "✍️ Prompt Engineering", back: "The art of crafting effective instructions to guide AI models to desired outputs.", proTip: "A well-engineered prompt is like giving clear directions to a powerful assistant." },
+            { front: "✨ Generative AI", back: "AI models that create new, original content rather than just analyzing existing data.", proTip: "If an AI creates something from scratch, it's likely a Generative AI model." },
+            { front: "🗣️ Large Language Model", back: "A type of Generative AI trained on massive text datasets, capable of understanding and generating language.", proTip: "LLMs are the brains behind conversational AIs like ChatGPT." },
+            { front: "📖 Context Window", back: "The maximum amount of text an AI model can consider at one time.", proTip: "A larger context window means the AI can 'remember' more of your conversation." },
+            { front: "🤥 AI Hallucination", back: "When an AI generates information that is factually incorrect or nonsensical.", proTip: "Always verify critical information provided by AI." }
+        ];
+
+        // Trending Terms Data
+        const trendingData = [
+            { term: "Multimodal AI", description: "AI systems that can process and understand information from multiple types of data inputs (text, images, audio, video) simultaneously." },
+            { term: "Agentic Workflows", description: "AI systems designed to perform complex tasks by breaking them down into sub-tasks, planning, executing, and self-correcting." },
+            { term: "Small Language Models (SLMs)", description: "Smaller, more efficient versions of LLMs designed for specific tasks or edge devices, offering faster inference and lower computational costs." },
+            { term: "Retrieval-Augmented Generation (RAG)", description: "A technique that enhances generative AI by allowing it to retrieve information from external knowledge bases before generating responses." },
+            { term: "AI Agents", description: "Autonomous AI systems that can perceive their environment, make decisions, and take actions to achieve specific goals." },
+            { term: "Fine-tuning vs. Prompting", description: "Fine-tuning involves retraining an AI model on specific data, while prompting guides an existing model through instructions." }
+        ];
+
+        // Initialize glossary
+        function initGlossary() {
+            const glossaryList = document.getElementById('glossary-list');
+            glossaryList.innerHTML = glossaryData.map(item => `
+                <div class="bg-gray-50 p-4 rounded border-l-4 border-blue-500">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="font-semibold text-lg">${item.term}</h3>
+                            <span class="text-xs text-gray-500">${item.category}</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mt-2">${item.definition}</p>
+                </div>
+            `).join('');
+        }
+
+        // Filter glossary
+        function filterGlossary() {
+            const searchTerm = document.getElementById('glossary-search').value.toLowerCase();
+            const items = document.querySelectorAll('#glossary-list > div');
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(searchTerm) ? 'block' : 'none';
+            });
+        }
+
+        // Initialize flashcards
+        function initFlashcards() {
+            const container = document.getElementById('flashcards-container');
+            container.innerHTML = flashcardsData.map((card, index) => `
+                <div class="flip-card" id="card-${index}" onclick="toggleFlip(${index})">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <h3 class="text-2xl font-semibold text-gray-800">${card.front}</h3>
+                            <p class="text-sm text-gray-500 mt-4">Click to reveal</p>
+                        </div>
+                        <div class="flip-card-back">
+                            <div>
+                                <p class="text-gray-800 mb-3">${card.back}</p>
+                                <p class="text-xs text-gray-600 italic">💡 ${card.proTip}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex gap-2 justify-center mt-2">
+                    <button onclick="shareFlashcard(${index}, 'twitter')" class="btn btn-sm btn-outline">Share on X</button>
+                    <button onclick="shareFlashcard(${index}, 'linkedin')" class="btn btn-sm btn-outline">Share on LinkedIn</button>
+                </div>
+            `).join('');
+        }
+
+        // Toggle flashcard flip
+        function toggleFlip(index) {
+            const card = document.getElementById(`card-${index}`);
+            card.classList.toggle('flipped');
+        }
+
+        // Share flashcard
+        function shareFlashcard(index, platform) {
+            const card = flashcardsData[index];
+            const text = `📚 Learning from Dino AI Academy: ${card.front}\n\n${card.back}\n\n💡 Pro Tip: ${card.proTip}\n\n#AILearning #DinoAI`;
+            
+            if (platform === 'twitter') {
+                window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
+            } else if (platform === 'linkedin') {
+                window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`, '_blank');
+            }
+        }
+
+        // Initialize trending
+        function initTrending() {
+            const trendingList = document.getElementById('trending-list');
+            trendingList.innerHTML = trendingData.map(item => `
+                <div class="bg-gradient-to-r from-orange-50 to-red-50 p-4 rounded border-l-4 border-orange-500">
+                    <h3 class="font-semibold text-lg text-orange-900">${item.term} 🔥</h3>
+                    <p class="text-gray-700 mt-2">${item.description}</p>
+                </div>
+            `).join('');
+        }
+
+        // Tab switching
+        function switchTab(tab) {
+            // Hide all tabs
+            document.getElementById('levels-tab').classList.add('hidden');
+            document.getElementById('glossary-tab').classList.add('hidden');
+            document.getElementById('flashcards-tab').classList.add('hidden');
+            document.getElementById('trending-tab').classList.add('hidden');
+
+            // Remove active state from all buttons
+            document.getElementById('tab-levels').classList.remove('btn-primary');
+            document.getElementById('tab-levels').classList.add('btn-outline');
+            document.getElementById('tab-glossary').classList.remove('btn-primary');
+            document.getElementById('tab-glossary').classList.add('btn-outline');
+            document.getElementById('tab-flashcards').classList.remove('btn-primary');
+            document.getElementById('tab-flashcards').classList.add('btn-outline');
+            document.getElementById('tab-trending').classList.remove('btn-primary');
+            document.getElementById('tab-trending').classList.add('btn-outline');
+
+            // Show selected tab
+            document.getElementById(tab + '-tab').classList.remove('hidden');
+            document.getElementById('tab-' + tab).classList.remove('btn-outline');
+            document.getElementById('tab-' + tab).classList.add('btn-primary');
+
+            // Initialize data if needed
+            if (tab === 'glossary') initGlossary();
+            if (tab === 'flashcards') initFlashcards();
+            if (tab === 'trending') initTrending();
+        }
+
+        // Toggle content visibility
+        function toggleContent(id) {
+            const element = document.getElementById(id);
+            element.classList.toggle('hidden');
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            initGlossary();
+        });
+    </script>
+</body>
+</html>
